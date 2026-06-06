@@ -1,0 +1,8 @@
+{
+    "manifest": [
+        {
+            "key": "bruceheater.bundle",
+            "dependencyKeys": ["assets/commonassets/physics/physicsmaterials.bundle", "cubemaps", "shaders"]
+        }
+    ]
+}

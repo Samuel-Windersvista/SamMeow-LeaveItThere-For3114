@@ -1,0 +1,34 @@
+[
+    {
+        "id": "67893431dcad180324ddcc1d",
+        "shortName": "Safehouse",
+        "name": "Safehouse Radio",
+        "description": "Place in raid and enable it to claim an area as your safehouse. Can be used to extract from a raid, and as an infil point.",
+        "sizeH": 1,
+        "sizeV": 2,
+        "weight": 0.5,
+        "bundlePath": "assets/content/items/equipment/item_equipment_radio_h4855/item_equipment_radio_h4855.bundle",
+        "traderId": "jaeger",
+        "assortId": "67893a461591f96fbdd9993c",
+        "loyaltyLevel": 1,
+        "currency": "rub",
+        "cost": 24500,
+        "fleaPrice": 0
+    },
+    {
+        "id": "67893bbeafe8250ed0fe6770",
+        "shortName": "Space Heater",
+        "name": "Bruce's Space Heater",
+        "description": "Comfort is important! Place in raid and enable it to reduce hydration and energy drain when nearby. Embued with gamer magic by some guy named Bruce.",
+        "sizeH": 3,
+        "sizeV": 3,
+        "weight": 4.2,
+        "bundlePath": "bruceheater.bundle",
+        "traderId": "jaeger",
+        "assortId": "67893bc3577387fd3f2c88d7",
+        "loyaltyLevel": 1,
+        "currency": "rub",
+        "cost": 48500,
+        "fleaPrice": 0
+    }
+]

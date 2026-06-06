@@ -2,6 +2,8 @@
 using EFT.UI;
 using HarmonyLib;
 using SPT.Reflection.Patching;
+using SPT.Reflection.Utils;
+using System;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
@@ -13,9 +15,18 @@ public static class CursorHelper
     public static bool CursorForceUnlocked { get; private set; } = false;
     private static bool _blockAllInput = false;
 
+    private static readonly Type _cursorType;
+    private static readonly MethodInfo _setCursorMethod;
+
+    static CursorHelper()
+    {
+        _cursorType = PatchConstants.EftTypes.Single(x => x.GetMethod("SetCursor") != null);
+        _setCursorMethod = _cursorType.GetMethod("SetCursor");
+    }
+
     public static void SetCursor(ECursorType type)
     {
-        GClass3746.SetCursor(type);
+        _setCursorMethod.Invoke(null, [type]);
     }
 
     public static void ToggleCursorForceUnlocked(bool blockAllInput = false)
@@ -43,7 +54,6 @@ public static class CursorHelper
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
-
     public static void ReturnCursorControlToEFT()
     {
         _blockAllInput = false;
@@ -53,15 +63,13 @@ public static class CursorHelper
         Cursor.visible = false;
     }
 
-    public class InputManagerUpdatePatch : ModulePatch
+    public class CursorPatch : ModulePatch
     {
         private static FieldInfo _cursorResultField;
 
         protected override MethodBase GetTargetMethod()
         {
-            // name is ecursorResult_0 in the InputManager class
             _cursorResultField = typeof(InputManager).GetFields(BindingFlags.NonPublic | BindingFlags.Instance).First(f => f.FieldType == typeof(ECursorResult));
-
             return AccessTools.Method(typeof(InputManager), nameof(InputManager.Update));
         }
 

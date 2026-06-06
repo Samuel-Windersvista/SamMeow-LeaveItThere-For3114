@@ -1,0 +1,375 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>LeaveItThere</name>
+    </assembly>
+    <members>
+        <member name="F:LeaveItThere.Addon.EPacketDestination.Everyone">
+            <summary>
+            NOTE: The host will send the sender's packet back to them. This is usually recommended.
+            </summary>
+        </member>
+        <member name="F:LeaveItThere.Addon.EPacketDestination.EveryoneExceptSender">
+            <summary>
+            WARNING: Avoid using this if you don't know what you're doing. Incorrect use of it can cause desync.
+            </summary>
+        </member>
+        <member name="T:LeaveItThere.Addon.LITPacketRegistration">
+            <summary>
+            Derivatives are singletons. Get them with LITPacketRegistration.Get&lt;T&gt;(). Do not instantiate them.
+            <para>To use, create your own class for your packet and inherit the base: MyCustomPacket : LITPacketRegistration.</para>
+            <para>Register it in your plugin's Awake() function with LITPacketRegistration.Get&lt;MyCustomPacket&gt;().Register();</para>
+            <para>Send it with  LITPacketRegistration.Get&lt;MyCustomPacket&gt;().SendBool(), .SendString(), .SentStringAndBool(), or .SendByteArray()</para>
+            <para>Make sure that your derived class is in a defined namespace to avoid potential ambiguous GUID generations</para>
+            </summary>
+        </member>
+        <member name="M:LeaveItThere.Addon.LITPacketRegistration.Get``1">
+            <summary>
+            Gets or creates the singleton instance of a packet registration.
+            </summary>
+            <typeparam name="T">The type of your derived class. MyCustomPacket : LITPacketRegistration.</typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:LeaveItThere.Addon.LITPacketRegistration.OnPacketReceived(LeaveItThere.Addon.LITPacketRegistration.Packet)">
+            <summary>
+            Invoked when the packet is received. NOTE: This is NEVER called unless if Fika is installed.
+            </summary>
+            <param name="packet">Get needed data from packet with: packet.BoolData, packet.StringData, or packet.ByteArrayData</param>
+        </member>
+        <member name="P:LeaveItThere.Addon.LITPacketRegistration.Destination">
+            <summary>
+            Who the packet will be sent to.
+            </summary>
+        </member>
+        <member name="M:LeaveItThere.Addon.LITPacketRegistration.OnPacketSent(LeaveItThere.Addon.LITPacketRegistration.Packet)">
+            <summary>
+            Invoked on the sender client every time the packet is sent. NOTE: This is never called unless Fika is installed.
+            </summary>
+        </member>
+        <member name="M:LeaveItThere.Addon.LITPacketRegistration.Register">
+            <summary>
+            Registers packet. Highly recommended to register packet in plugin's Awake() function.
+            </summary>
+        </member>
+        <member name="M:LeaveItThere.Addon.LITPacketRegistration.SendData(System.Object)">
+            <summary>
+            Sends a packet containing data given. This function does nothing if Fika is not installed.
+            </summary>
+            <param name="data">Data to send</param>
+        </member>
+        <member name="T:LeaveItThere.Addon.LITFikaTools">
+            <summary>
+            Exposed external tools to be used primarily by Leave It There addons
+            </summary>
+        </member>
+        <member name="M:LeaveItThere.Addon.LITFikaTools.IAmHost">
+            <summary>
+            Returns true if Fika is not installed, or if it is and this client is the host of the raid.
+            </summary>
+        </member>
+        <member name="M:LeaveItThere.Addon.LITFikaTools.GetRaidId">
+            <summary>
+            Returns profile id if Fika is not installed, or the id of the raid if it is (which will be the host's profile id).
+            </summary>
+        </member>
+        <member name="T:LeaveItThere.Addon.LITStaticEvents">
+            <summary>
+            All these events are static! Make sure to clean up subscriptions if needed!
+            </summary>
+        </member>
+        <member name="E:LeaveItThere.Addon.LITStaticEvents.OnItemPlacedStateChanged">
+            <summary>
+            Invoked every time an item is placed or reclaimed, including if it is re-placed in cases like being moved via move mode, or a packet received telling with instructions to place at X position, etc.
+            </summary>
+        </member>
+        <member name="E:LeaveItThere.Addon.LITStaticEvents.OnFakeItemInitialized">
+            <summary>
+            Invoked once every time the item is placed, when it was not already placed. Will not be invoked if item is moved.
+            </summary>
+        </member>
+        <member name="E:LeaveItThere.Addon.LITStaticEvents.OnFakeItemReclaimed">
+            <summary>
+            Invoked when an item is reclaimed. Will not be invoked if item is moved.
+            </summary>
+        </member>
+        <member name="E:LeaveItThere.Addon.LITStaticEvents.OnPlacedItemSpawned">
+            <summary>
+            Invoked after LeaveItThere spawns a placed item and creates / initializes its FakeItem component on raid start.
+            </summary>
+        </member>
+        <member name="E:LeaveItThere.Addon.LITStaticEvents.OnRaidEnd">
+            <summary>
+            Invoked just before LeaveItThere ModSession sends data to the server. This is the latest possible point where AddonData should be added.
+            </summary>
+        </member>
+        <member name="E:LeaveItThere.Addon.LITStaticEvents.OnLastPlacedItemSpawned">
+            <summary>
+            Invoked after LeaveItThere spawns the last placed item, ideal time for checking if items exist or fetching their AddonData
+            </summary>
+        </member>
+        <member name="M:LeaveItThere.Common.CustomInteraction.#ctor">
+            <summary>
+            If this constructor is used, FakeItem will not be set. Be sure not to use it unless you use the constructor overload that takes a FakeItem as an argument.
+            </summary>
+        </member>
+        <member name="P:LeaveItThere.Common.CustomInteraction.TargetName">
+            <summary>
+            Text that shows under the interaction prompt. Only works if it is on the first interaction in the list. GetActionsTypesClassList finds the first TargetName and applies it to the first interaction, but if you are using GetActionsTypesClass you'll have to manually ensure that the first interaction has the desired TargetName set.
+            </summary>
+        </member>
+        <member name="P:LeaveItThere.Common.CustomInteraction.Enabled">
+            <summary>
+            If returns false, interaction prompt will be greyed out and not selectable.
+            </summary>
+        </member>
+        <member name="P:LeaveItThere.Common.CustomInteraction.AutoPromptRefresh">
+            <summary>
+            If returns true, the interaction will auto refresh after Action() is called. This will update any names or states of the interaction, but will also reset the selected action to the first one.
+            </summary>
+        </member>
+        <member name="P:LeaveItThere.Common.CustomInteraction.Name">
+            <summary>
+            Name of interaction item in prompt.
+            </summary>
+        </member>
+        <member name="M:LeaveItThere.Common.CustomInteraction.OnInteract">
+            <summary>
+            Interaction callback. Will be called when an interaction is interacted with.
+            </summary>
+        </member>
+        <member name="T:LeaveItThere.Common.InteractionExamples.SuperSimpleExample">
+            <summary>
+            Simple example that uses a FakeItem input
+            </summary>
+        </member>
+        <member name="M:LeaveItThere.Common.InteractionExamples.SuperSimpleExample.#ctor(LeaveItThere.Components.FakeItem)">
+            <summary>
+            Simple example that uses a FakeItem input
+            </summary>
+        </member>
+        <member name="T:LeaveItThere.Common.InteractionExamples.ExampleThatRunsCodeOnceWhenCreated">
+            <summary>
+            This example is good for if you need to initialize another class instance once and store a reference to it in a property or field to be later accessed by the interaction callback
+            </summary>
+        </member>
+        <member name="T:LeaveItThere.Common.InteractionExamples.AllTheOtherThingsExample">
+            <summary>
+            Shows more potential overrides (note that overriding is unnecessary if the default value is desired, such as Enabled defaulting to true).
+            Also note that you don't HAVE to give the interaction a FakeItem. But, of course if you do not, then you won't be able to use the FakeItem property.
+            </summary>
+        </member>
+        <member name="T:LeaveItThere.Common.InteractionExamples.HowToUse">
+            <summary>
+            Ideally in OnFakeItemInitialized callback, add new instances of your interactions to the FakeItem's Actions list.
+            </summary>
+        </member>
+        <member name="M:LeaveItThere.Components.ItemMover.UpdatePlayerLastFrameDeltas">
+            <summary>
+            Should be called in OnEnable() and at the end of Update() to keep track of last frame's player pos
+            </summary>
+        </member>
+        <member name="P:LeaveItThere.Components.ItemMover.PlayerMovementDelta">
+            <summary>
+            Will only be correct while ItemMover is enabled
+            </summary>
+        </member>
+        <member name="F:LeaveItThere.Components.LITSession.CostOverrides">
+            <summary>
+            Key = item template id, Value = the desired cost
+            </summary>
+        </member>
+        <member name="M:LeaveItThere.Components.LITSession.GetGlobalAddonDataOrNull``1(System.String)">
+            <summary>
+            Fetches Global Addon Data by it's key, returns null if none is found. T must be a class.
+            </summary>
+            <typeparam name="T">Must be a class. After Addon Data is fetched once, it can usually be modified directly without needing to use PutGlobalAddonData again since classes are stored by reference.</typeparam>
+            <param name="key">Key that Addon Data was saved under.</param>
+        </member>
+        <member name="M:LeaveItThere.Components.LITSession.PutGlobalAddonData``1(System.String,``0)">
+            <summary>
+            Saves Global Addon Data by a given key. Data will be saved to user/profiles/LeaveItThere-ItemData. Will be globally accessible when fetched, data is not associated with any specific item.
+            </summary>
+            <typeparam name="T">Must be a class.</typeparam>
+            <param name="key">Key used to fetch the data later.</param>
+            <param name="data"></param>
+        </member>
+        <member name="F:LeaveItThere.Components.FakeItem.AddonFlags.MoveModeDisabled">
+            <summary>
+            When true, the Move interaction is disabled.
+            </summary>
+        </member>
+        <member name="F:LeaveItThere.Components.FakeItem.AddonFlags.MoveModeDisabledReason">
+            <summary>
+            Reason displayed for Move interaction being disabled in context menu
+            </summary>
+        </member>
+        <member name="F:LeaveItThere.Components.FakeItem.AddonFlags.ReclaimInteractionDisabled">
+            <summary>
+            When true, the Reclaim interaction is disabled.
+            </summary>
+        </member>
+        <member name="F:LeaveItThere.Components.FakeItem.AddonFlags.ReclaimInteractionDisabledReason">
+            <summary>
+            Reason displayed for Reclaim interaction being disabled in context menu
+            </summary>
+        </member>
+        <member name="F:LeaveItThere.Components.FakeItem.AddonFlags.IsPhysicalRegardlessOfSize">
+            <summary>
+            Set to true to make this FakeItem ignore size restrictions and always be have player collision / block bot pathing.
+            </summary>
+        </member>
+        <member name="F:LeaveItThere.Components.FakeItem.AddonFlags.RemoveRootCollider">
+            <summary>
+            When true, the root BoxCollider component that is added to LootItems will be removed. Useful for when a custom item has a child object defining a custom collider to be used for interactions.
+            </summary>
+        </member>
+        <member name="E:LeaveItThere.Components.FakeItem.OnSpawned">
+            <summary>
+            Invoked if this FakeItem was just spawned by LITSession at start of raid
+            </summary>
+        </member>
+        <member name="E:LeaveItThere.Components.FakeItem.OnPlacedStateChanged">
+            <summary>
+            Invoked any time the placed state of the FakeItem is changed. Unike OnFakeItemInitialized, it will be invoked when item is moved.
+            </summary>
+        </member>
+        <member name="M:LeaveItThere.Components.FakeItem.GetAddonDataOrNull``1(System.String)">
+            <summary>
+            Fetches Addon Data on this FakeItem by it's key, returns null if none is found. T must be a class.
+            </summary>
+            <typeparam name="T">Must be a class. After Addon Data is fetched once, it can usually be modified directly without needing to use PutAddonData again since classes are stored by reference.</typeparam>
+            <param name="key">Key that Addon Data was saved under.</param>
+        </member>
+        <member name="M:LeaveItThere.Components.FakeItem.PutAddonData``1(System.String,``0)">
+            <summary>
+            Saves Addon Data by a given key. Data will be saved to user/profiles/LeaveItThere-ItemData under the FakeItem that the data is added to.
+            </summary>
+            <typeparam name="T">Must be a class.</typeparam>
+            <param name="key">Key used to fetch the data later.</param>
+            <param name="data"></param>
+        </member>
+        <member name="M:LeaveItThere.CustomUI.ButtonDrag.Init(UnityEngine.RectTransform)">
+            <summary>
+            Component should be added to the UI element that needs to be clicked in order to initiate dragging (like a button)
+            </summary>
+            <param name="rectToDrag">Rect that actually gets dragged</param>
+        </member>
+        <member name="M:LeaveItThere.Helpers.ItemHelper.SetupItem(EFT.InventoryLogic.Item,UnityEngine.Vector3,UnityEngine.Quaternion)">
+            <summary>
+            Reimplementation of GameWorld.SetupItem that makes sure collisionDetectionMode is set correctly before rb is made to be kinematic to avoid unity warning spam.
+            </summary>
+        </member>
+        <member name="M:LeaveItThere.Helpers.LITUtils.ForAllDescendants(UnityEngine.GameObject,System.Action{UnityEngine.GameObject})">
+            <summary>
+            对 GameObject 的所有子物体（递归）执行操作，无 GC 分配。
+            </summary>
+        </member>
+        <member name="M:LeaveItThere.Helpers.LITUtils.ServerRouteAsync``1(System.String,``0)">
+            <summary>
+            Fire-and-forget 异步 HTTP POST，用于非阻塞保存数据。
+            </summary>
+        </member>
+        <member name="T:ConfigurationManagerAttributes">
+            <summary>
+            Class that specifies how a setting should be displayed inside the ConfigurationManager settings window.
+            
+            Usage:
+            This class template has to be copied inside the plugin's project and referenced by its code directly.
+            make a new instance, assign any fields that you want to override, and pass it as a tag for your setting.
+            
+            If a field is null (default), it will be ignored and won't change how the setting is displayed.
+            If a field is non-null (you assigned a value to it), it will override default behavior.
+            </summary>
+            
+            <example> 
+            Here's an example of overriding order of settings and marking one of the settings as advanced:
+            <code>
+            // Override IsAdvanced and Order
+            Config.AddSetting("X", "1", 1, new ConfigDescription("", null, new ConfigurationManagerAttributes { IsAdvanced = true, Order = 3 }));
+            // Override only Order, IsAdvanced stays as the default value assigned by ConfigManager
+            Config.AddSetting("X", "2", 2, new ConfigDescription("", null, new ConfigurationManagerAttributes { Order = 1 }));
+            Config.AddSetting("X", "3", 3, new ConfigDescription("", null, new ConfigurationManagerAttributes { Order = 2 }));
+            </code>
+            </example>
+            
+            <remarks> 
+            You can read more and see examples in the readme at https://github.com/BepInEx/BepInEx.ConfigurationManager
+            You can optionally remove fields that you won't use from this class, it's the same as leaving them null.
+            </remarks>
+        </member>
+        <member name="F:ConfigurationManagerAttributes.ShowRangeAsPercent">
+            <summary>
+            Should the setting be shown as a percentage (only use with value range settings).
+            </summary>
+        </member>
+        <member name="F:ConfigurationManagerAttributes.CustomDrawer">
+            <summary>
+            Custom setting editor (OnGUI code that replaces the default editor provided by ConfigurationManager).
+            See below for a deeper explanation. Using a custom drawer will cause many of the other fields to do nothing.
+            </summary>
+        </member>
+        <member name="F:ConfigurationManagerAttributes.Browsable">
+            <summary>
+            Show this setting in the settings screen at all? If false, don't show.
+            </summary>
+        </member>
+        <member name="F:ConfigurationManagerAttributes.Category">
+            <summary>
+            Category the setting is under. Null to be directly under the plugin.
+            </summary>
+        </member>
+        <member name="F:ConfigurationManagerAttributes.DefaultValue">
+            <summary>
+            If set, a "Default" button will be shown next to the setting to allow resetting to default.
+            </summary>
+        </member>
+        <member name="F:ConfigurationManagerAttributes.HideDefaultButton">
+            <summary>
+            Force the "Reset" button to not be displayed, even if a valid DefaultValue is available. 
+            </summary>
+        </member>
+        <member name="F:ConfigurationManagerAttributes.HideSettingName">
+            <summary>
+            Force the setting name to not be displayed. Should only be used with a <see cref="F:ConfigurationManagerAttributes.CustomDrawer"/> to get more space.
+            Can be used together with <see cref="F:ConfigurationManagerAttributes.HideDefaultButton"/> to gain even more space.
+            </summary>
+        </member>
+        <member name="F:ConfigurationManagerAttributes.Description">
+            <summary>
+            Optional description shown when hovering over the setting.
+            Not recommended, provide the description when creating the setting instead.
+            </summary>
+        </member>
+        <member name="F:ConfigurationManagerAttributes.DispName">
+            <summary>
+            Name of the setting.
+            </summary>
+        </member>
+        <member name="F:ConfigurationManagerAttributes.Order">
+            <summary>
+            Order of the setting on the settings list relative to other settings in a category.
+            0 by default, higher number is higher on the list.
+            </summary>
+        </member>
+        <member name="F:ConfigurationManagerAttributes.ReadOnly">
+            <summary>
+            Only show the value, don't allow editing it.
+            </summary>
+        </member>
+        <member name="F:ConfigurationManagerAttributes.IsAdvanced">
+            <summary>
+            If true, don't show the setting by default. User has to turn on showing advanced settings or search for it.
+            </summary>
+        </member>
+        <member name="F:ConfigurationManagerAttributes.ObjToStr">
+            <summary>
+            Custom converter from setting type to string for the built-in editor textboxes.
+            </summary>
+        </member>
+        <member name="F:ConfigurationManagerAttributes.StrToObj">
+            <summary>
+            Custom converter from string to setting type for the built-in editor textboxes.
+            </summary>
+        </member>
+    </members>
+</doc>

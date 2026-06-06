@@ -1,43 +1,40 @@
 ﻿using EFT;
 using HarmonyLib;
-using LeaveItThere.Addon;
 using LeaveItThere.Components;
-using LeaveItThere.Helpers;
+using LeaveItThere.CustomUI;
 using SPT.Reflection.Patching;
 using System.Reflection;
 
-namespace LeaveItThere.Patches;
-
-internal class EarlyGameStartedPatch : ModulePatch
+namespace LeaveItThere.Patches
 {
-    protected override MethodBase GetTargetMethod()
+    internal class EarlyGameStartedPatch : ModulePatch
     {
-        return AccessTools.Method(typeof(BotsController), nameof(BotsController.SetSettings));
+        protected override MethodBase GetTargetMethod()
+        {
+            return AccessTools.Method(typeof(BotsController), nameof(BotsController.SetSettings));
+        }
+
+        [PatchPostfix]
+        static void PatchPrefix()
+        {
+            LITSession.CreateNewModSession();
+        }
     }
 
-    [PatchPostfix]
-    static void PatchPrefix()
+    internal class EarlyGameStartedPatchFika : ModulePatch
     {
-        RaidSession.Instance.InitOnGameStart();
-        ItemSpawner.SpawnAllPlacedItems();
-        StaticEvents.InvokeGameStarted();
+        protected override MethodBase GetTargetMethod()
+        {
+            return AccessTools.Method(typeof(GameWorld), nameof(GameWorld.RegisterRestrictableZones));
+        }
+
+        [PatchPostfix]
+        static void PatchPrefix(GameWorld __instance)
+        {
+            if (__instance is HideoutGameWorld) return;
+
+            LITSession.CreateNewModSession();
+            MoveModeUI.Instance.SetActive(false);
+        }
     }
 }
-
-internal class EarlyGameStartedPatchFika : ModulePatch
-{
-    protected override MethodBase GetTargetMethod()
-    {
-        return AccessTools.Method(typeof(GameWorld), nameof(GameWorld.RegisterRestrictableZones));
-    }
-
-    [PatchPostfix]
-    static void PatchPrefix(GameWorld __instance)
-    {
-        if (__instance is HideoutGameWorld) return;
-        RaidSession.Instance.InitOnGameStart();
-        ItemSpawner.SpawnAllPlacedItems();
-        StaticEvents.InvokeGameStarted();
-    }
-}
-

@@ -1,24 +1,48 @@
-﻿using LeaveItThere.Fika;
+﻿using Comfort.Common;
+using Fika.Core.Coop.Utils;
+using Fika.Core.Networking;
+using LeaveItThere.Fika;
 using LeaveItThere.FikaModule.Common;
-using LeaveItThere.FikaModule.Helpers;
 
-namespace LeaveItThere.FikaModule;
-
-internal class Main
+namespace LeaveItThere.FikaModule
 {
-    // called by the core dll via reflection
-    public static void Init()
+    internal class Main
     {
-        FikaBridge.PluginEnableEmitted += EventSubscriber.InitOnPluginEnabled;
+        // called by the core dll via reflection
+        public static void Init()
+        {
+            PluginAwake();
+            FikaBridge.PluginEnableEmitted += PluginEnable;
 
-        FikaBridge.IAmHostEmitted += FikaTools.IAmHost;
-        FikaBridge.GetRaidIdEmitted += FikaTools.GetRaidId;
+            FikaBridge.IAmHostEmitted += IAmHost;
+            FikaBridge.GetRaidIdEmitted += GetRaidId;
 
-        FikaBridge.SendPlacedStateChangedPacketEmitted += PlacementPacketHandler.SendPlacedStateChangedPacket;
-        FikaBridge.SendStateSynchronizerUpdatePacketEmitted += StateSynchronizerPacketHandler.SendPacket;
+            FikaBridge.SendPlacedStateChangedPacketEmitted += FikaMethods.SendPlacedStateChangedPacket;
+            FikaBridge.SendSpawnItemPacketEmitted += FikaMethods.SendSpawnItemPacket;
 
-        FikaBridge.RegisterGenericPacketEmitted += GenericPacketHandler.RegisterPacket;
-        FikaBridge.UnregisterGenericPacketEmitted += GenericPacketHandler.UnregisterPacket;
-        FikaBridge.SendGenericPacketEmitted += GenericPacketHandler.SendPacket;
+            FikaBridge.RegisterPacketEmitted += GenericPacketTools.RegisterPacket;
+            FikaBridge.UnregisterPacketEmitted += GenericPacketTools.UnregisterPacket;
+            FikaBridge.SendPacketEmitted += GenericPacketTools.SendPacket;
+        }
+
+        public static void PluginAwake()
+        {
+
+        }
+
+        public static void PluginEnable()
+        {
+            FikaMethods.InitOnPluginEnabled();
+        }
+
+        public static bool IAmHost()
+        {
+            return Singleton<FikaServer>.Instantiated;
+        }
+
+        public static string GetRaidId()
+        {
+            return FikaBackendUtils.GroupId;
+        }
     }
 }

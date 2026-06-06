@@ -3,18 +3,19 @@ using LeaveItThere.Components;
 using SPT.Reflection.Patching;
 using System.Reflection;
 
-namespace LeaveItThere.Patches;
-
-internal class InteractionsChangedHandlerPatch : ModulePatch
+namespace LeaveItThere.Patches
 {
-    protected override MethodBase GetTargetMethod()
+    internal class InteractionsChangedHandlerPatch : ModulePatch
     {
-        return typeof(GamePlayerOwner).GetMethod(nameof(GamePlayerOwner.InteractionsChangedHandler));
-    }
+        protected override MethodBase GetTargetMethod()
+        {
+            return typeof(GamePlayerOwner).GetMethod(nameof(GamePlayerOwner.InteractionsChangedHandler));
+        }
 
-    [PatchPrefix]
-    static bool PatchPrefix()
-    {
-        return RaidSession.Instance.InteractionsAllowed;
+        [PatchPrefix]
+        static bool PatchPrefix()
+        {
+            return LITSession.Instance.InteractionsAllowed;
+        }
     }
 }
